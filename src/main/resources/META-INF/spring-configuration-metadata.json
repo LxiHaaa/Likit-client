@@ -1,0 +1,18 @@
+{
+  "groups": [
+    {
+      "name": "likit",
+      "type": "com.likit.spring.config.LikitProperties",
+      "sourceType": "com.likit.spring.config.LikitProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "likit.host",
+      "type": "java.lang.String",
+      "description": "hostname",
+      "sourceType": "com.uhu.kotter.spring.config.LikitProperties"
+    }
+  ],
+  "hints": []
+}
