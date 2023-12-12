@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.likit.spring.api.VoteUseCase;
 import com.likit.spring.api.dto.VoteDTO;
 import com.likit.spring.config.LikitProperties;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import build.buf.gen.likit.api.v1.*;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -26,16 +28,13 @@ public class VoteUseCaseImpl implements VoteUseCase {
 
     private final LikitProperties likitProperties;
 
-    @Override
-    public long vote(VoteDTO voteDTO) {
-        restTemplate.getForObject(getPath("/vote"), String.class);
-        String body = JSONObject.toJSONString(voteDTO);
-        ResponseEntity<JSONObject> responseEntity = restTemplate.postForEntity(getPath("/vote"), body, JSONObject.class);
-        if(responseEntity.getStatusCodeValue() != 200){
-            throw new RuntimeException("Likit Server return Error: " + responseEntity.getBody().get("Message"));
-        }
-        return Long.parseLong(Objects.requireNonNull(responseEntity.getBody()).getString("Count"));
-    }
+    private final VoteServiceGrpc.VoteServiceBlockingStub client = VoteServiceGrpc.newBlockingStub(ManagedChannelBuilder.forAddress("localhost", 4778).usePlaintext().build());
+
+     @Override
+     public long vote(VoteDTO voteDTO) {
+         VoteResponse response =  client.vote(VoteRequest.newBuilder().setBusinessId(voteDTO.getBusinessId()).setMessageId(voteDTO.getMessageId()).setUserId(voteDTO.getUserId()).build());
+         return response.getCount();
+     }
 
     @Override
     public long unvote(VoteDTO voteDTO) {
