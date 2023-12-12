@@ -7,7 +7,7 @@ Likit-client is a client library for Java.
 <dependency>
     <groupId>io.github.lxihaaa</groupId>
     <artifactId>likit-client</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -23,25 +23,26 @@ A Comment Like Example
 public class VoteController {
 
     @Autowired
-    private VoteUseCase voteUseCase;
+    private LikitService likitService;
 
     @GetMapping("/vote")
     public String Vote(){
-        long count = voteUseCase.vote(new VoteDTO("BTYPE","MESSAGE","LXY"));
+        long count = likitService.vote("BTYPE","MESSAGE","LXY");
         return "success:" + count;
     }
 
     @GetMapping("/unvote")
     public String UnVote(){
-        long count = voteUseCase.unvote(new VoteDTO("BTYPE","MESSAGE","LXY"));
+        long count = likitService.unvote("BTYPE","MESSAGE","LXY");
         return "success:" + count;
     }
 
     @GetMapping("/count")
     public String count(){
-        long count = voteUseCase.count("BTYPE", "MESSAGE");
+        long count = likitService.getVoteCount("BTYPE", "MESSAGE");
         return "success:" + count;
     }
+
 
 }
 ```
