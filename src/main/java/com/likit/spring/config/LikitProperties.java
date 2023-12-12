@@ -18,4 +18,6 @@ public class LikitProperties {
 
     public Integer port;
 
+    public Boolean tls;
+
 }

@@ -18,6 +18,12 @@
       "type": "java.lang.Integer",
       "description": "port",
       "sourceType": "com.likit.spring.config.LikitProperties"
+    },
+    {
+      "name": "likit.tls",
+      "type": "java.lang.Boolean",
+      "description": "tls enable",
+      "sourceType": "com.likit.spring.config.LikitProperties"
     }
   ],
   "hints": []

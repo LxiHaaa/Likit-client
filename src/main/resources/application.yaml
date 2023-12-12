@@ -4,3 +4,4 @@ server:
 likit:
   host: likit-grpc.zeabur.app
   port: 443
+  tls: true
