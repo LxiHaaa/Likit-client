@@ -20,19 +20,19 @@ public class VoteController {
 
     @GetMapping("/vote")
     public String Vote(){
-        long count = likitService.vote("BTYPE","MESSAGE","LXY");
+        long count = likitService.vote("COMMENT_LIKE","MESSAGE","LXY");
         return "success:" + count;
     }
 
     @GetMapping("/unvote")
     public String UnVote(){
-        long count = likitService.unvote("BTYPE","MESSAGE","LXY");
+        long count = likitService.unvote("COMMENT_LIKE","MESSAGE","LXY");
         return "success:" + count;
     }
 
     @GetMapping("/count")
     public String count(){
-        long count = likitService.getVoteCount("BTYPE", "MESSAGE");
+        long count = likitService.getVoteCount("COMMENT_LIKE", "MESSAGE");
         return "success:" + count;
     }
 

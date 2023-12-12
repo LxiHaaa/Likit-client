@@ -25,11 +25,18 @@ public class LikitServiceImp implements LikitService {
 
     @PostConstruct
     public void init(){
-        client = VoteServiceGrpc.newBlockingStub(
-                ManagedChannelBuilder
-                        .forAddress(likitProperties.getHost(), likitProperties.getPort())
-                        .usePlaintext()
-                        .build());
+        if (likitProperties.getTls()) {
+            client = VoteServiceGrpc.newBlockingStub(
+                    ManagedChannelBuilder
+                            .forAddress(likitProperties.getHost(), likitProperties.getPort())
+                            .useTransportSecurity()
+                            .build());
+        }else{
+            client = VoteServiceGrpc.newBlockingStub(
+                    ManagedChannelBuilder
+                            .forAddress(likitProperties.getHost(), likitProperties.getPort())
+                            .build());
+        }
     }
 
     @Override
