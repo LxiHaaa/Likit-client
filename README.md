@@ -1,8 +1,8 @@
 # Likit-client
-Likit-client is a client library for Java.
+Likit-client is a [Likit](https://github.com/CorrectRoadH/Likit) client library for Java.
 
 # Usage
-## maven
+## Maven
 ```xml
 <dependency>
     <groupId>io.github.lxihaaa</groupId>
@@ -11,36 +11,80 @@ Likit-client is a client library for Java.
 </dependency>
 ```
 
-## gradle
+## Gradle
 ```xml
-...
+implementation group: 'io.github.lxihaaa', name: 'likit-client', version: '1.3-SNAPSHOT'
 ```
 
+## Configuration
+add configuration to application.yml
+```yaml
+likit:
+  server:
+    host: localhost
+    port: 4778
+    tls: false
+```
+
+if you deploy likit in zeabur. you should set tls to true.
+
+```yaml
+likit:
+  server:
+    host: likit-grpc.zeabur.app
+    port: 443
+    tls: true
+```
+
+## Code
 A Comment Like Example
 ```java
 @RestController
-@RequestMapping("/vote")
+@RequestMapping("/comment")
 public class VoteController {
 
     @Autowired
     private LikitService likitService;
 
+    private final String businessId = "COMMENT_LIKE";
+    
     @GetMapping("/vote")
     public String Vote(){
-        long count = likitService.vote("BTYPE","MESSAGE","LXY");
-        return "success:" + count;
+        // get userId from JWT, Cookie or any other way
+        String userId = ....
+        
+        // messageId is the id of the thing that be voted
+        String messageId = ...
+        
+        long count = likitService.vote(businessId, messageId, userId);
+        return count;
     }
 
     @GetMapping("/unvote")
     public String UnVote(){
-        long count = likitService.unvote("BTYPE","MESSAGE","LXY");
-        return "success:" + count;
+        // get userId from JWT, Cookie or any other way
+        String userId = ....
+
+        // messageId is the id of the thing that be voted
+        String messageId = ...
+
+        long count = likitService.unvote(businessId, messageId, userId);
+        return count;
     }
 
-    @GetMapping("/count")
+    @GetMapping("/listComment")
     public String count(){
-        long count = likitService.getVoteCount("BTYPE", "MESSAGE");
-        return "success:" + count;
+        // get userId from JWT, Cookie or any other way
+        String userId = ....
+
+
+        Comment[] comments = commentService.getComment(...);
+        for (Comment comment : comments) {
+            comment.setIsVote(likitService.getIsVote(businessId, comment.getId(), userId));
+            comment.setVoteCount(likitService.getVoteCount(businessId, comment.getId()));
+        }
+        
+        return comments;
     }
 
 
