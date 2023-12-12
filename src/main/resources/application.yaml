@@ -1,0 +1,6 @@
+server:
+  port: 8080
+
+likit:
+  host: likit-grpc.zeabur.app
+  port: 443
