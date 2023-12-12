@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "likit")
 public class LikitProperties {
 
-    public String localhost;
+    public String host;
 
     public Integer port;
 

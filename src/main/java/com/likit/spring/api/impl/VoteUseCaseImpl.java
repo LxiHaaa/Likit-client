@@ -28,7 +28,7 @@ public class VoteUseCaseImpl implements com.likit.spring.api.VoteUseCase {
     public void init(){
         client = VoteServiceGrpc.newBlockingStub(
                 ManagedChannelBuilder
-                        .forAddress(likitProperties.getLocalhost(), likitProperties.getPort())
+                        .forAddress(likitProperties.getHost(), likitProperties.getPort())
                         .usePlaintext()
                         .build());
     }
