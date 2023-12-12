@@ -8,7 +8,7 @@
   ],
   "properties": [
     {
-      "name": "likit.localhost",
+      "name": "likit.host",
       "type": "java.lang.String",
       "description": "hostname",
       "sourceType": "com.likit.spring.config.LikitProperties"
