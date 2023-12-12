@@ -1,5 +1,6 @@
 package com.likit.spring.api;
 
+import com.google.protobuf.ProtocolStringList;
 import com.likit.spring.api.dto.VoteDTO;
 
 /**
@@ -9,10 +10,13 @@ import com.likit.spring.api.dto.VoteDTO;
  */
 public interface VoteUseCase {
 
-    public long vote(VoteDTO voteDTO);
+    long vote(VoteDTO voteDTO);
 
-    public long unvote(VoteDTO voteDTO);
+    long unVote(VoteDTO voteDTO);
 
-    public long count(String businessId,String messageId);
+    long count(String businessId,String messageId);
 
+    boolean isVote(VoteDTO voteDTO);
+
+    ProtocolStringList VotedUsers(String businessId,String messageId);
 }

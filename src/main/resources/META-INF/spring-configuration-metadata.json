@@ -8,10 +8,16 @@
   ],
   "properties": [
     {
-      "name": "likit.host",
+      "name": "likit.localhost",
       "type": "java.lang.String",
       "description": "hostname",
-      "sourceType": "com.uhu.kotter.spring.config.LikitProperties"
+      "sourceType": "com.likit.spring.config.LikitProperties"
+    },
+    {
+      "name": "likit.port",
+      "type": "java.lang.Integer",
+      "description": "port",
+      "sourceType": "com.likit.spring.config.LikitProperties"
     }
   ],
   "hints": []

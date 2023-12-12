@@ -1,17 +1,15 @@
 package com.likit.spring.api.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.likit.spring.api.VoteUseCase;
+import build.buf.gen.likit.api.v1.*;
+import com.google.protobuf.ProtocolStringList;
 import com.likit.spring.api.dto.VoteDTO;
 import com.likit.spring.config.LikitProperties;
+import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-import java.util.Objects;
+import javax.annotation.PostConstruct;
 
 /**
  * @author: LXY
@@ -20,49 +18,90 @@ import java.util.Objects;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class VoteUseCaseImpl implements VoteUseCase {
-
-    private final RestTemplate restTemplate;
+public class VoteUseCaseImpl implements com.likit.spring.api.VoteUseCase {
 
     private final LikitProperties likitProperties;
 
-    @Override
-    public long vote(VoteDTO voteDTO) {
-        restTemplate.getForObject(getPath("/vote"), String.class);
-        String body = JSONObject.toJSONString(voteDTO);
-        ResponseEntity<JSONObject> responseEntity = restTemplate.postForEntity(getPath("/vote"), body, JSONObject.class);
-        if(responseEntity.getStatusCodeValue() != 200){
-            throw new RuntimeException("Likit Server return Error: " + responseEntity.getBody().get("Message"));
-        }
-        return Long.parseLong(Objects.requireNonNull(responseEntity.getBody()).getString("Count"));
+    private VoteServiceGrpc.VoteServiceBlockingStub client = null;
+
+    @PostConstruct
+    public void init(){
+        client = VoteServiceGrpc.newBlockingStub(
+                ManagedChannelBuilder
+                        .forAddress(likitProperties.getLocalhost(), likitProperties.getPort())
+                        .usePlaintext()
+                        .build());
     }
 
+    /**
+     * @param voteDTO A full object is require
+     * @return count
+     */
     @Override
-    public long unvote(VoteDTO voteDTO) {
-        restTemplate.getForObject(getPath("/vote"), String.class);
-        String body = JSONObject.toJSONString(voteDTO);
-        ResponseEntity<JSONObject> responseEntity = restTemplate.postForEntity(getPath("/vote"), body, JSONObject.class);
-        if(responseEntity.getStatusCodeValue() != 200){
-            throw new RuntimeException("Likit Server return Error: " + responseEntity.getBody().get("Message"));
-        }
-        return Long.parseLong(Objects.requireNonNull(responseEntity.getBody()).getString("Count"));
+    public long vote(VoteDTO voteDTO) {
+        VoteResponse response =  client.vote(VoteRequest
+                .newBuilder()
+                .setBusinessId(voteDTO.getBusinessId())
+                .setMessageId(voteDTO.getMessageId())
+                .setUserId(voteDTO.getUserId())
+                .build()
+        );
+        return response.getCount();
+    }
+
+    /**
+     * @param voteDTO A full object is require
+     * @return count
+     */
+    @Override
+    public long unVote(VoteDTO voteDTO) {
+        VoteResponse response = client.unVote(VoteRequest
+                .newBuilder()
+                .setBusinessId(voteDTO.getBusinessId())
+                .setMessageId(voteDTO.getMessageId())
+                .setUserId(voteDTO.getUserId())
+                .build()
+        );
+        return response.getCount();
     }
 
     @Override
     public long count(String businessId,String messageId) {
-        HashMap<String,Object> pathValueMap = new HashMap<>();
-        pathValueMap.put("businessId",businessId);
-        pathValueMap.put("messageId",messageId);
-        ResponseEntity<JSONObject> responseEntity = restTemplate.getForEntity(
-                getPath("/count/{businessId}/{messageId}"),
-                JSONObject.class,
-                pathValueMap
+        CountResponse response = client.count(CountRequest
+                .newBuilder()
+                .setBusinessId(businessId)
+                .setMessageId(messageId)
+                .build()
         );
-        return Long.parseLong(responseEntity.getBody().getString("count"));
+        return response.getCount();
     }
 
-    public String getPath(String path) {
-        return likitProperties.getHost() + path;
+    /**
+     * @param voteDTO A full object is require
+     * @return true or false
+     */
+    @Override
+    public boolean isVote(VoteDTO voteDTO) {
+        IsVotedResponse response = client.isVoted(IsVotedRequest
+                .newBuilder()
+                .setBusinessId(voteDTO.getBusinessId())
+                .setMessageId(voteDTO.getMessageId())
+                .setUserId(voteDTO.getUserId())
+                .build()
+        );
+        return response.getIsVoted();
     }
+
+    @Override
+    public ProtocolStringList VotedUsers(String businessId,String messageId) {
+        VotedUsersResponse votedUsersResponse = client.votedUsers(VotedUsersRequest
+                .newBuilder()
+                .setBusinessId(businessId)
+                .setMessageId(messageId)
+                .build()
+        );
+        return votedUsersResponse.getUserIdsList();
+    }
+
 
 }

@@ -6,7 +6,22 @@
 
     <groupId>io.github.lxihaaa</groupId>
     <artifactId>likit-client</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0-RELEASE</version>
+
+    <!-- pom.xml -->
+    <repositories>
+        <repository>
+            <name>Buf Maven Repository</name>
+            <id>build.buf.gen</id>
+            <url>https://buf.build/gen/maven</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -17,16 +32,19 @@
     </properties>
 
     <dependencies>
+        <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.26</version>
         </dependency>
+        <!-- json -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.28</version>
         </dependency>
+        <!-- springboot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -42,6 +60,12 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
             <version>${spring-boot-version}</version>
+        </dependency>
+        <!-- buf -->
+        <dependency>
+            <groupId>build.buf.gen</groupId>
+            <artifactId>likit_likit_grpc_java</artifactId>
+            <version>1.60.0.1.20231211030636.3daef0ce288c</version>
         </dependency>
     </dependencies>
 
