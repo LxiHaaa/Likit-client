@@ -1,8 +1,7 @@
 package com.likit.spring.api.impl;
 
 import build.buf.gen.likit.api.v1.*;
-import com.google.protobuf.ProtocolStringList;
-import com.likit.spring.api.dto.VoteDTO;
+import com.likit.spring.api.LikitService;
 import com.likit.spring.config.LikitProperties;
 import io.grpc.ManagedChannelBuilder;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,7 @@ import javax.annotation.PostConstruct;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class VoteUseCaseImpl implements com.likit.spring.api.VoteUseCase {
+public class LikitServiceImp implements LikitService {
 
     private final LikitProperties likitProperties;
 
@@ -33,40 +32,33 @@ public class VoteUseCaseImpl implements com.likit.spring.api.VoteUseCase {
                         .build());
     }
 
-    /**
-     * @param voteDTO A full object is require
-     * @return count
-     */
     @Override
-    public long vote(VoteDTO voteDTO) {
+    public long vote(String businessId, String messageId, String userId) {
         VoteResponse response =  client.vote(VoteRequest
                 .newBuilder()
-                .setBusinessId(voteDTO.getBusinessId())
-                .setMessageId(voteDTO.getMessageId())
-                .setUserId(voteDTO.getUserId())
+                .setBusinessId(businessId)
+                .setMessageId(messageId)
+                .setUserId(userId)
                 .build()
         );
         return response.getCount();
     }
 
-    /**
-     * @param voteDTO A full object is require
-     * @return count
-     */
     @Override
-    public long unVote(VoteDTO voteDTO) {
+    public long unvote(String businessId, String messageId, String userId) {
         VoteResponse response = client.unVote(VoteRequest
                 .newBuilder()
-                .setBusinessId(voteDTO.getBusinessId())
-                .setMessageId(voteDTO.getMessageId())
-                .setUserId(voteDTO.getUserId())
+                .setBusinessId(businessId)
+                .setMessageId(messageId)
+                .setUserId(userId)
                 .build()
         );
         return response.getCount();
+
     }
 
     @Override
-    public long count(String businessId,String messageId) {
+    public long getVoteCount(String businessId, String messageId) {
         CountResponse response = client.count(CountRequest
                 .newBuilder()
                 .setBusinessId(businessId)
@@ -76,32 +68,26 @@ public class VoteUseCaseImpl implements com.likit.spring.api.VoteUseCase {
         return response.getCount();
     }
 
-    /**
-     * @param voteDTO A full object is require
-     * @return true or false
-     */
     @Override
-    public boolean isVote(VoteDTO voteDTO) {
+    public boolean getIsVote(String businessId, String messageId, String userId) {
         IsVotedResponse response = client.isVoted(IsVotedRequest
                 .newBuilder()
-                .setBusinessId(voteDTO.getBusinessId())
-                .setMessageId(voteDTO.getMessageId())
-                .setUserId(voteDTO.getUserId())
+                .setBusinessId(businessId)
+                .setMessageId(messageId)
+                .setUserId(userId)
                 .build()
         );
         return response.getIsVoted();
     }
 
     @Override
-    public ProtocolStringList VotedUsers(String businessId,String messageId) {
+    public String[] getVotedUsers(String businessId, String messageId) {
         VotedUsersResponse votedUsersResponse = client.votedUsers(VotedUsersRequest
                 .newBuilder()
                 .setBusinessId(businessId)
                 .setMessageId(messageId)
                 .build()
         );
-        return votedUsersResponse.getUserIdsList();
+        return votedUsersResponse.getUserIdsList().stream().map(String::valueOf).toArray(String[]::new);
     }
-
-
 }
