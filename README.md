@@ -7,13 +7,13 @@ Likit-client is a [Likit](https://github.com/CorrectRoadH/Likit) client library 
 <dependency>
     <groupId>io.github.lxihaaa</groupId>
     <artifactId>likit-client</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.0.0-RELEASE</version>
 </dependency>
 ```
 
 ## Gradle
 ```xml
-implementation group: 'io.github.lxihaaa', name: 'likit-client', version: '1.3-SNAPSHOT'
+implementation group: 'io.github.lxihaaa', name: 'likit-client', version: '1.0.0-RELEASE'
 ```
 
 ## Configuration
