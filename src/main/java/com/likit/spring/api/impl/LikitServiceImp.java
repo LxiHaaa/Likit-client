@@ -2,15 +2,11 @@ package com.likit.spring.api.impl;
 
 import build.buf.gen.likit.api.v1.*;
 import com.likit.spring.api.LikitService;
-import com.likit.spring.config.LikitProperties;
 import com.likit.spring.exception.LikitException;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 /**
  * @author: LXY
@@ -21,20 +17,7 @@ import javax.annotation.PostConstruct;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class LikitServiceImp implements LikitService {
 
-    private final LikitProperties likitProperties;
-
-    private VoteServiceGrpc.VoteServiceBlockingStub client = null;
-
-    @PostConstruct
-    public void init(){
-        ManagedChannelBuilder<?> managedChannelBuilder = ManagedChannelBuilder
-                .forAddress(likitProperties.getHost(), likitProperties.getPort())
-                .usePlaintext();
-        if(likitProperties.getTls()){
-            managedChannelBuilder.useTransportSecurity();
-        }
-        client =  VoteServiceGrpc.newBlockingStub(managedChannelBuilder.build());
-    }
+    private final VoteServiceGrpc.VoteServiceBlockingStub client;
 
     @Override
     public long vote(String businessId, String messageId, String userId) {
