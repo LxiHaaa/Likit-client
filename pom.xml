@@ -6,7 +6,7 @@
 
     <groupId>io.github.lxihaaa</groupId>
     <artifactId>likit-client</artifactId>
-    <version>1.0.0-RELEASE</version>
+    <version>1.0.1-RELEASE</version>
 
     <!-- pom.xml -->
     <repositories>
